@@ -3,10 +3,8 @@ const handleSignin = (db, bcrypt) => (req, res) => {
 
     if(!email || !password) {
         return res.status(400).json('Incorrect form submission')
-    } else {
-        checkUser(email, password);
-    }
-
+    } 
+    
     async function checkUser(email, password) {
         //... fetch user from a db etc.
         db.select('email', 'hash').from('login')
