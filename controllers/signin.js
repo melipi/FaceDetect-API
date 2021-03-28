@@ -6,6 +6,7 @@ const handleSignin = (db, bcrypt) => (req, res) => {
     db.select('email', 'hash').from('login')
     .where('email', '=', email)
     .then(data => {
+        console.log(data)
         const isValid = bcrypt.compareSync(password, data[0].hash);
         if(isValid) {
             return db.select('*'). from('users')
@@ -18,7 +19,7 @@ const handleSignin = (db, bcrypt) => (req, res) => {
          res.status(400).json('Sorry, invalid username or password')
         }
     })
-    .catch(err => res.status(400).json('Invalid username or password!', err))
+    .catch(err => res.status(400).json('Invalid username or password!'))
  }
 
  module.exports = {
