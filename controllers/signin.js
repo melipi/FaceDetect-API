@@ -15,10 +15,10 @@ const handleSignin = (db, bcrypt) => (req, res) => {
              })
              .catch(err => res.status(400).json('Error logging in'))
         } else {
-         res.status(400).json('Invalid username or password')
+         res.status(400).json('Sorry, invalid username or password')
         }
     })
-    .catch(err => res.status(400).json('Invalid username or password'))
+    .catch(err => res.status(400).json('Invalid username or password!'))
  }
 
  module.exports = {
