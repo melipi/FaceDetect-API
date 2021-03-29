@@ -3,34 +3,31 @@ const handleSignin = (db, bcrypt) => (req, res) => {
     if(!email || !password) {
         return res.status(400).json('Incorrect form submission')
     }
-    db.select('email', 'hash').from('login')
+    db
+    .select('email', 'hash')
+    .from('login')
     .where('email', '=', email)
     .then(data => {
-        if (data.length) {
-            const isValid = bcrypt.compare(password, data[0].hash, function(err, result) {
-                console.log('check result', result) //debug
-                res.status(400).json('1- Error matching credentials to db')
-            });
-
-            console.log('check const', isValid) //debug
-
-            if(isValid) {
-                console.log('True', isValid)    //debug
-                return db.select('*')
-                    .from('users')
-                    .where('email', '=', email)
-                    .then(user => {
-                        res.json(user[0])
-                    })
-                    .catch(err => res.status(400).json('2- Error matching credentials to db'))
-            } else {
-                console.log('False', isValid)   //debug
-                res.status(400).json('3- Error matching credentials to db')
+        return bcrypt.compare(password, data[0].hash)
+    })
+    .then(async same => {
+        if (same) {
+            try {
+                const users = await knex('users')
+                    .select('*')
+                    .where('email', '=', req.body.email);
+                res.json(users[0]);
+            } catch (err) {
+                res.status(400).json('Failed to fetch the user');
             }
+        } else {
+            res.status(400).json('Invalid credentials');
         }
     })
-    .catch(err => res.status(400).json('4- Error matching credentials to db'))
- }
+    .catch(err => {
+        res.status(400).json('failed to login');
+    })
+}
 
  module.exports = {
      handleSignin
