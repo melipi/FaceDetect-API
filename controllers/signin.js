@@ -1,4 +1,4 @@
-const handleSignin = (db, bcrypt) => (req, res) => {
+const handleSignin = (db, bcrypt) => async (req, res) => {
     const { email, password } = req.body;
     if(!email || !password) {
         return res.status(400).json('Incorrect form submission')
@@ -11,7 +11,7 @@ const handleSignin = (db, bcrypt) => (req, res) => {
         console.log(data);
         const isValid = bcrypt.compare(password, data[0].hash);
         console.log (isValid);
-        return isValid;
+        await isValid;
     })
     .then(async same => {
         if (same) {
