@@ -14,6 +14,7 @@ const handleSignin = (db, bcrypt) => async (req, res) => {
         return isValid;
     })
     .then(async same => {
+        console.log(same);
         if (same) {
             try {
                 const users = await knex('users')
