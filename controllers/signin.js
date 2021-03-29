@@ -9,19 +9,19 @@ const handleSignin = (db, bcrypt) => async (req, res) => {
     .from('login')
     .where('email', '=', email)
     .then (async data => {
-        console.log(data);
         const isValid = await bcrypt.compare(password, data[0].hash);
-        console.log (isValid);
         return isValid;
     })
     .then(async same => {
-        console.log(same);
         if (same) {
             try {
-                const users = await knex('users')
+                return knex('users')
                     .select('*')
-                    .where('email', '=', email);
-                    res.json(users[users.length - 1])
+                    .where('email', '=', email)
+                    .then (user => {
+                        res.json(users[0]);
+                        console.log(users[0]);
+                    })
             } catch (err) {
                 res.status(400).json('Failed to fetch the user');
             }
