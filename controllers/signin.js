@@ -7,28 +7,29 @@ const handleSignin = (db, bcrypt) => (req, res) => {
     .where('email', '=', email)
     .then(data => {
         if (data.length) {
-            console.log('check data', data)
+            const isValid = bcrypt.compare(password, data[0].hash, function(err, result) {
+                console.log('check result', result) //debug
+                res.status(400).json('1- Error matching credentials to db')
+            });
 
-            const isValid = bcrypt.compareSync(password, data[0].hash);
-    
-            console.log('check const', isValid)
-    
+            console.log('check const', isValid) //debug
+
             if(isValid) {
-                console.log('True', isValid)
+                console.log('True', isValid)    //debug
                 return db.select('*')
                     .from('users')
                     .where('email', '=', email)
                     .then(user => {
                         res.json(user[0])
                     })
-                    .catch(err => res.status(400).json('1 - Error, something went wrong'))
+                    .catch(err => res.status(400).json('2- Error matching credentials to db'))
             } else {
-                console.log('False', isValid)
-                res.status(400).json('2 - Invalid username or password!')
+                console.log('False', isValid)   //debug
+                res.status(400).json('3- Error matching credentials to db')
             }
         }
     })
-    .catch(err => res.status(400).json('4 - Invalid username or password!'))
+    .catch(err => res.status(400).json('4- Error matching credentials to db'))
  }
 
  module.exports = {
