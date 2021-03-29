@@ -21,7 +21,7 @@ const handleSignin = (db, bcrypt) => async (req, res) => {
                     .select('*')
                     .where('email', '=', email);
                 res.json(users[0]);
-                console.log(users);
+                console.log(users[0]);
             } catch (err) {
                 res.status(400).json('Failed to fetch the user');
             }
