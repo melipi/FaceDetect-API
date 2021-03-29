@@ -7,7 +7,7 @@ const handleSignin = (db, bcrypt) => async (req, res) => {
     .select('email', 'hash')
     .from('login')
     .where('email', '=', email)
-    .then(data => {
+    .then (async data => {
         console.log(data);
         const isValid = await bcrypt.compare(password, data[0].hash);
         console.log (isValid);
