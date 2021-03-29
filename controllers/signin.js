@@ -10,18 +10,13 @@ const handleSignin = (db, bcrypt) => async (req, res) => {
     .where('email', '=', email)
     .then (async data => {
         const isValid = await bcrypt.compare(password, data[0].hash);
-        return isValid;
-    })
-    .then(async same => {
-        if (same) {
+        if (isValid) {
             try {
-                return knex('users')
-                    .select('*')
-                    .where('email', '=', email)
-                    .then (user => {
-                        res.json(users[0]);
-                        console.log(users[0]);
-                    })
+                return db.select('*').from('users')
+                .where('email', '=', email)
+                .then(user => {
+                  res.json(user[0])
+                })
             } catch (err) {
                 res.status(400).json('Failed to fetch the user');
             }
