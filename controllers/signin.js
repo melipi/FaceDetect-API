@@ -19,8 +19,9 @@ const handleSignin = (db, bcrypt) => async (req, res) => {
             try {
                 const users = await knex('users')
                     .select('*')
-                    .where('email', '=', req.body.email);
+                    .where('email', '=', email);
                 res.json(users[0]);
+                console.log(users);
             } catch (err) {
                 res.status(400).json('Failed to fetch the user');
             }
