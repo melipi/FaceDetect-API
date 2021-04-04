@@ -1,32 +1,36 @@
-const handleRegister = (db, bcrypt, saltRounds) => (req, res) => {
+const handleRegister = (db, bcrypt, saltRounds) => async (req, res) => {
     const { email, name, password } = req.body;
     if(!email || !name || !password) {
         return res.status(400).json('Incorrect form submission')
     }
-    const hash = bcrypt.hashSync(password, saltRounds);
-    db.transaction(trx => {
-        trx.insert({
-            hash: hash,
-            email: email
-        })
-        .into('login')
-        .returning('email')
-        .then(loginEmail => {
-            return trx('users')
-            .returning('*')
+
+    const hash = await bcrypt.hash(password, saltRounds);
+
+    try {
+        await db.transaction (async trx => {
+          //Insert into login table
+            const loginEmail = await trx('login')
+                .insert({
+                    email: email,
+                    hash: hash
+                })
+                .returning('email');
+
+          //Insert into users table
+          const user = await trx('users')
             .insert({
-                email: loginEmail[0],
-                name: name,
-                joined: new Date()
+              name: name,
+              email: loginEmail[0],
+              joined: new Date()
             })
-            .then(user => {
-                res.json(user[0]);
-            })
+            .returning('*');      
+        res.json(user[0]);
         })
-        .then(trx.commit)
-        .catch(trx.rollback)
-    })    
-    .catch(err => res.status(400).json('Unable to register'))
+      }
+      catch (err){
+        console.log(err);
+        res.status(400).json('Unable to register');
+      }
 }
 
 module.exports = {
