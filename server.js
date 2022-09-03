@@ -20,6 +20,7 @@ const db = knex({
 });
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -33,13 +34,13 @@ app.use(express.json());
 //     next();
 // });
 
-app.get('/', (req, res) => { res.send('Server up and running :)') })
-app.post('/signin', signin.handleSignin(db, bcrypt))
-app.post('/register', register.handleRegister(db, bcrypt, saltRounds))
-app.get('/profile/:id', profile.handleProfileGet(db))
-app.put('/image', image.handleImage(db))
-app.post('/imageurl', image.handleApiCall)
+app.get('/', (req, res) => { res.send('Server up and running :)') });
+app.post('/signin', signin.handleSignin(db, bcrypt));
+app.post('/register', register.handleRegister(db, bcrypt, saltRounds));
+app.get('/profile/:id', profile.handleProfileGet(db));
+app.put('/image', image.handleImage(db));
+app.post('/imageurl', image.handleApiCall);
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
-})
+});
