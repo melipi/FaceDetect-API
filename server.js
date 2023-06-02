@@ -9,11 +9,19 @@ const signin = require('./controllers/signin');
 const profile = require('./controllers/profile');
 const image = require('./controllers/image');
 
-// Connection to NeonDB
 const db = knex({
     client: 'pg',
-    connection: process.env.DATABASE_URL,
-    searchPath: ['knex', 'public']
+    connection: {
+        connectionString : process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
+        },
+        host: process.env.DATABASE_HOST,
+        port: process.env.DATABASE_PORT,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PW,
+        database: process.env.DATABASE_DB
+    }
 });
 
 const app = express();
