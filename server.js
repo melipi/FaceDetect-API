@@ -13,9 +13,7 @@ const image = require('./controllers/image');
 const db = knex({
     client: 'pg',
     connection: process.env.DATABASE_URL,
-    pool: {
-        min: 0
-    }
+    searchPath: ['knex', 'public']
 });
 
 const app = express();
